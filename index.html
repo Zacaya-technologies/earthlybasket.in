@@ -192,11 +192,17 @@
 <!-- INGREDIENT WHEEL (cosmic orbit) -->
 <section class="ingredients dark-section">
   <div class="ing-stars" aria-hidden="true"></div>
+  <div class="ing-shooting-layer" id="ingShooting" aria-hidden="true"></div>
   <div class="wrap">
     <div class="ing-wrap">
+      <svg class="ing-orbit" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <ellipse cx="50" cy="50" rx="37" ry="34"></ellipse>
+      </svg>
       <div class="ing-ring ing-ring-outer" id="ingRing"></div>
       <div class="ing-comet ing-comet-a" aria-hidden="true"></div>
       <div class="ing-comet ing-comet-b" aria-hidden="true"></div>
+      <div class="ing-comet ing-comet-c" aria-hidden="true"></div>
+      <div class="ing-comet ing-comet-d" aria-hidden="true"></div>
       <div class="ing-dot ing-dot-1" aria-hidden="true"></div>
       <div class="ing-dot ing-dot-2 ing-dot-sm" aria-hidden="true"></div>
       <div class="ing-dot ing-dot-3 ing-dot-sm" aria-hidden="true"></div>
@@ -510,6 +516,44 @@ gsap.to('.p-card', {
 });
 
 /* ---------- ingredient wheel: fixed, static — no rotation/entrance animation ---------- */
+/* ---------- ingredient wheel: ambient shooting stars + twinkling dust ---------- */
+(function(){
+  const shootLayer = document.getElementById('ingShooting');
+  const starsLayer = document.querySelector('.ingredients .ing-stars');
+  if(!shootLayer || !starsLayer || window.reduceMotion) return;
+
+  const rand = (min, max) => Math.random() * (max - min) + min;
+  const frag1 = document.createDocumentFragment();
+  const shootCount = window.isMobile ? 8 : Math.round(rand(10, 15));
+  for(let i = 0; i < shootCount; i++){
+    const s = document.createElement('span');
+    s.className = 'ing-shoot';
+    s.style.setProperty('--top', rand(-4, 55).toFixed(1) + '%');
+    s.style.setProperty('--left', rand(-8, 65).toFixed(1) + '%');
+    s.style.setProperty('--trail', Math.round(rand(30, 120)) + 'px');
+    s.style.setProperty('--head', Math.round(rand(2, 5)) + 'px');
+    s.style.setProperty('--dur', rand(2, 5).toFixed(2) + 's');
+    s.style.setProperty('--delay', rand(0, 6).toFixed(2) + 's');
+    s.style.setProperty('--op', rand(0.55, 0.95).toFixed(2));
+    frag1.appendChild(s);
+  }
+  shootLayer.appendChild(frag1);
+
+  const frag2 = document.createDocumentFragment();
+  const twinkleCount = window.isMobile ? 16 : Math.round(rand(24, 40));
+  for(let i = 0; i < twinkleCount; i++){
+    const t = document.createElement('span');
+    t.className = 'ing-twinkle';
+    t.style.setProperty('--top', rand(0, 100).toFixed(1) + '%');
+    t.style.setProperty('--left', rand(0, 100).toFixed(1) + '%');
+    t.style.setProperty('--tsize', rand(1, 2.4).toFixed(1) + 'px');
+    t.style.setProperty('--dur', rand(1.8, 4.2).toFixed(2) + 's');
+    t.style.setProperty('--delay', rand(0, 5).toFixed(2) + 's');
+    t.style.setProperty('--op', rand(0.5, 0.95).toFixed(2));
+    frag2.appendChild(t);
+  }
+  starsLayer.appendChild(frag2);
+})();
 
 /* ---------- benefits counters ---------- */
 document.querySelectorAll('.b-num').forEach(el=>{
