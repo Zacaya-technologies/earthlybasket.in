@@ -267,3 +267,23 @@ window.handleImgError = function(img){
 })();
 
 window.addEventListener('load', ()=> ScrollTrigger.refresh());
+
+/* ---------- SCROLL TO TOP BUTTON ---------- */
+(function(){
+  const btn = document.createElement('button');
+  btn.className = 'scroll-top-btn';
+  btn.type = 'button';
+  btn.setAttribute('aria-label', 'Scroll to top');
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>';
+  document.body.appendChild(btn);
+
+  function toggleVisibility(){
+    btn.classList.toggle('visible', window.scrollY > 400);
+  }
+  window.addEventListener('scroll', toggleVisibility, { passive:true });
+  toggleVisibility();
+
+  btn.addEventListener('click', ()=>{
+    window.scrollTo({ top:0, behavior:'smooth' });
+  });
+})();

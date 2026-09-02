@@ -1362,3 +1362,20 @@ footer{background:var(--rice-dim); color:var(--ink); padding:80px 0 30px;}
   .search-panel{border-radius:22px; max-height:80vh;}
   .search-panel-head{padding:16px 16px;}
 }
+
+/* ---------- SCROLL TO TOP BUTTON ---------- */
+.scroll-top-btn{
+  position:fixed; right:31px; bottom:96px; z-index:900;
+  width:46px; height:46px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--ink); color:var(--rice);
+  box-shadow:0 12px 28px -8px rgba(42,27,16,0.45);
+  opacity:0; visibility:hidden; transform:translateY(12px);
+  transition:opacity .3s var(--ease), transform .3s var(--ease), visibility .3s, background .3s var(--ease);
+}
+.scroll-top-btn.visible{opacity:1; visibility:visible; transform:translateY(0);}
+.scroll-top-btn:hover, .scroll-top-btn:focus-visible{background:var(--clay);}
+.scroll-top-btn svg{width:20px; height:20px;}
+@media(max-width:600px){
+  .scroll-top-btn{right:20px; bottom:78px; width:42px; height:42px;}
+}
