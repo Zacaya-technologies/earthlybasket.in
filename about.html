@@ -618,8 +618,8 @@
   }
 
   /* =====================================================================
-     MOBILE / TABLET — same auto-play; the whole train still fits in one
-     frame (flex-basis:0 items reflow to the narrower width automatically)
+     TABLET (768px–860px) — same horizontal train as desktop, just at
+     the smaller flex-computed sizes (unchanged from before)
      ===================================================================== */
   @media (max-width: 860px){
     .journey{ --wheel-r: 20px; }
@@ -630,9 +630,92 @@
     .scroll-hint{ display: none; }
   }
 
+  /* =====================================================================
+     MOBILE (below 768px) — dedicated VERTICAL timeline. The horizontal
+     sliding train doesn't fit a phone screen readably, so below this
+     breakpoint the same markup (unchanged HTML/JS) is re-laid-out as a
+     stacked list: badge → card → badge → card … with the locomotive and
+     its track moved (via CSS `order`, not DOM order) to the very end as
+     a closing decorative flourish. Desktop/tablet (≥768px) above are
+     completely untouched by this block.
+     ===================================================================== */
+  @media (max-width: 767px){
+    .journey, .journey-header, .journey-track-outer, .journey-rail,
+    .journey-train, .journey-carriage, .locomotive, .carriage-body{
+      box-sizing: border-box;
+    }
+
+    .journey{ --wheel-r: 16px; }
+    .journey-header{ padding: 40px 20px 28px; }
+    .journey-heading{ font-size: clamp(26px, 7vw, 32px); margin-bottom: 10px; }
+    .journey-sub{ font-size: 14px; line-height: 1.55; }
+
+    .journey-track-outer{ max-width: 100%; padding: 0 20px; overflow: hidden; }
+    .journey-rail{ padding-top: 4px; padding-bottom: 4px; }
+
+    /* stack badge + card + badge + card … instead of a side-by-side row */
+    .journey-train{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      gap: 0;
+      transform: none !important; /* no horizontal slide-in on mobile */
+    }
+
+    /* locomotive rides to the end of the stack as a closing visual,
+       sitting on its own short piece of track */
+    .locomotive{
+      order: 99;
+      width: min(56vw, 220px);
+      margin: 4px auto 0;
+    }
+    .steam{ left: 10%; }
+
+    .journey-carriage{
+      flex: 0 0 auto;
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto 46px;
+    }
+    .journey-carriage::before{ display: none; } /* side coupler nub: no adjacent carriage on mobile */
+
+    /* continues the badge→card dotted line down into the gap before
+       the NEXT year badge, so the timeline line reads as continuous */
+    .journey-carriage:not(:last-child)::after{
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -46px;
+      width: 1px;
+      height: 46px;
+      border-left: 2px dotted rgba(247,240,232,0.4);
+      transform: translateX(-50%);
+    }
+
+    .badge-wrap{
+      position: static;
+      transform: none;
+      margin-bottom: 14px;
+    }
+
+    /* decorative rail: keep it absolutely pinned to the bottom of
+       .journey-rail (which now coincides with the locomotive, since
+       the locomotive is re-ordered to the end of the stack) — just
+       remove the wide desktop bleed so it never overflows the viewport */
+    .railway-track{
+      left: 0; right: 0;
+      width: 100%;
+      height: 22px;
+    }
+
+    .scroll-hint{ display: none !important; }
+  }
+
   @media (max-width: 480px){
-    .journey-heading{ font-size: 30px; }
-    .journey-sub{ font-size: 14.5px; }
+    .journey-carriage{ margin-bottom: 40px; }
+    .journey-carriage:not(:last-child)::after{ bottom: -40px; height: 40px; }
+    .locomotive{ width: min(62vw, 200px); }
   }
 
   /* ---------- Reduced motion: show the finished journey, no scroll-jack ---------- */
