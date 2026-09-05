@@ -117,51 +117,161 @@ button{font-family:inherit; cursor:pointer; border:none; background:none; color:
    outside .nav's stacking context. .nav.scrolled uses backdrop-filter, and a
    backdrop-filter/transform/filter on an ancestor becomes the containing block
    for position:fixed descendants, which was collapsing the old in-nav drawer
-   down to the ~80px nav-bar height instead of the full viewport. */
+   down to the ~80px nav-bar height instead of the full viewport.
+
+   Redesigned as a premium organic "app drawer": logo header, a handwritten
+   tagline, icon+chevron nav rows with an active pill, a promo card, social
+   icons and an organic bottom visual — all built from the site's existing
+   color variables, fonts (--script/--serif) and icon language. */
 .mobile-drawer-backdrop{
-  position:fixed; inset:0; background:rgba(42,27,16,0.4);
+  position:fixed; inset:0; background:rgba(42,27,16,0.45);
   z-index:1999; opacity:0; visibility:hidden;
   transition:opacity .3s var(--ease), visibility .3s;
 }
 .mobile-drawer-backdrop.open{opacity:1; visibility:visible;}
 .mobile-drawer{
   position:fixed; top:0; right:0; height:100vh; height:100dvh;
-  width:min(82vw, 400px); max-width:420px;
+  width:clamp(300px, 85vw, 400px);
   background:var(--rice); color:var(--ink);
   z-index:2000;
   display:flex; flex-direction:column;
-  overflow-y:auto;
+  overflow-x:hidden; overflow-y:auto;
   box-shadow:-20px 0 40px -10px rgba(42,27,16,0.2);
   transform:translateX(100%);
-  transition:transform .35s var(--ease);
+  transition:transform .4s var(--ease);
   padding-top:env(safe-area-inset-top);
   padding-bottom:env(safe-area-inset-bottom);
+  isolation:isolate;
 }
 .mobile-drawer.open{transform:translateX(0);}
+
+/* subtle organic blob tucked behind the header — echoes the site's rounded,
+   hand-drawn corner-decoration motif used elsewhere */
+.mobile-drawer::before{
+  content:''; position:absolute; top:-14%; right:-20%; width:62%; height:26%;
+  min-height:190px;
+  background:var(--blob3); opacity:0.65;
+  border-radius:38% 62% 55% 45% / 48% 40% 60% 52%;
+  z-index:0; pointer-events:none;
+}
+.mobile-drawer > *{ position:relative; z-index:1; }
+
 .mobile-drawer-header{
   display:flex; align-items:center; justify-content:space-between; gap:16px;
-  padding:24px 24px; flex-shrink:0;
+  padding:26px 22px 4px; flex-shrink:0;
 }
-.mobile-drawer-header .logo-img{height:40px;}
-.mobile-drawer-header .logo-text{font-size:20px;}
+.mobile-drawer-header .logo-img{height:46px;}
+.mobile-drawer-header .logo-text{font-size:21px;}
 .mobile-drawer-close{
   display:flex; align-items:center; justify-content:center; flex-shrink:0;
-  width:40px; height:40px; margin:-8px; border:none; background:none; color:var(--ink); cursor:pointer;
+  width:40px; height:40px; margin:-8px; border-radius:50%;
+  border:none; background:rgba(42,27,16,0.06); color:var(--ink); cursor:pointer;
+  transition:background .25s var(--ease);
 }
+.mobile-drawer-close:hover, .mobile-drawer-close:focus-visible{background:rgba(42,27,16,0.12);}
+
+.mobile-drawer-tagline{
+  font-family:var(--script); color:var(--hero-green-dark);
+  font-size:29px; line-height:1.18; padding:12px 24px 4px; flex-shrink:0;
+}
+.mobile-drawer-tagline span{font-size:0.78em; vertical-align:-1px;}
+
 .mobile-drawer-nav{
-  display:flex; flex-direction:column; gap:6px; padding:8px 24px 40px;
+  display:flex; flex-direction:column; gap:4px; padding:18px 16px 4px; flex-shrink:0;
 }
-.mobile-drawer-nav a{
-  display:block; position:relative; width:fit-content;
-  font-size:19px; font-weight:600; color:var(--ink); opacity:0.72; padding:11px 0; line-height:1.3;
+.mdn-item{
+  display:flex; align-items:center; gap:14px;
+  padding:11px 12px; border-radius:18px;
+  font-weight:600; font-size:16.5px; color:var(--ink);
+  opacity:0; transform:translateY(8px);
+  transition:background .25s var(--ease), opacity .45s var(--ease), transform .45s var(--ease);
 }
-.mobile-drawer-nav a:hover{opacity:1;}
-.mobile-drawer-nav a.active{opacity:1;}
-.mobile-drawer-nav a.active::after{
-  content:''; display:block; width:28px; height:3px; margin-top:5px; border-radius:999px; background:var(--turmeric);
+.mobile-drawer.open .mdn-item{opacity:1; transform:translateY(0);}
+.mobile-drawer.open .mdn-item:nth-child(1){transition-delay:.08s;}
+.mobile-drawer.open .mdn-item:nth-child(2){transition-delay:.13s;}
+.mobile-drawer.open .mdn-item:nth-child(3){transition-delay:.18s;}
+.mobile-drawer.open .mdn-item:nth-child(4){transition-delay:.23s;}
+.mobile-drawer.open .mdn-item:nth-child(5){transition-delay:.28s;}
+.mdn-item:hover{background:rgba(42,27,16,0.045);}
+.mdn-icon{
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  width:42px; height:42px; border-radius:50%;
+  background:var(--blob3); color:var(--hero-green-dark);
 }
+.mdn-icon svg{width:19px; height:19px;}
+.mdn-item:nth-child(2) .mdn-icon{background:var(--blob2); color:var(--clay);}
+.mdn-item:nth-child(3) .mdn-icon{background:rgba(124,138,76,0.16); color:var(--hero-green-dark);}
+.mdn-item:nth-child(4) .mdn-icon{background:var(--rice-dim); color:var(--millet);}
+.mdn-item:nth-child(5) .mdn-icon{background:#F7F1E4; color:var(--millet);}
+.mdn-label{flex:1;}
+.mdn-chevron{font-size:20px; line-height:1; opacity:0.35; flex-shrink:0; font-weight:400;}
+.mdn-item.is-active{background:var(--blob3);}
+.mdn-item.is-active .mdn-icon{background:var(--hero-green-dark); color:#fff;}
+.mdn-item.is-active .mdn-label{color:var(--hero-green-dark);}
+.mdn-item.is-active .mdn-chevron{opacity:0.6; color:var(--hero-green-dark);}
+
+.mobile-drawer-promo{
+  display:flex; align-items:flex-start; gap:14px;
+  margin:16px 16px 0; padding:20px 18px;
+  background:var(--blob3); border-radius:20px;
+  flex-shrink:0;
+}
+.mdp-leaf{
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  width:24px; height:24px; color:var(--hero-green-dark); margin-top:2px;
+}
+.mdp-leaf svg{width:100%; height:100%;}
+.mobile-drawer-promo p{
+  font-family:var(--serif); font-weight:600; font-size:15.5px; line-height:1.4; color:var(--ink);
+  position:relative; padding-bottom:8px;
+}
+.mobile-drawer-promo p::after{
+  content:''; position:absolute; left:0; bottom:0; width:30px; height:2px;
+  background:var(--hero-green-dark); opacity:0.4; border-radius:99px;
+}
+
+.mobile-drawer-social{
+  display:flex; align-items:center; justify-content:center; gap:12px;
+  padding:22px 16px; flex-shrink:0;
+}
+.mobile-drawer-social a{
+  display:flex; align-items:center; justify-content:center;
+  width:42px; height:42px; border-radius:50%;
+  background:var(--rice-dim); color:var(--ink);
+  transition:background .25s var(--ease), color .25s var(--ease);
+}
+.mobile-drawer-social a svg{width:17px; height:17px;}
+.mobile-drawer-social a:hover{background:var(--hero-green-dark); color:#fff;}
+
+.mobile-drawer-footer{
+  position:relative; margin-top:auto; flex-shrink:0;
+  height:clamp(170px, 25vh, 210px); overflow:hidden;
+}
+.mdf-shape{
+  position:absolute; inset:0; background:var(--hero-green-dark);
+  border-radius:58% 42% 0 0/100% 100% 0 0;
+}
+.mdf-photo{
+  position:absolute; right:0; bottom:0; width:70%; height:98%;
+  object-fit:contain; object-position:bottom right;
+}
+.mdf-words{
+  position:absolute; left:24px; top:22px; z-index:1;
+  display:flex; flex-direction:column; gap:6px;
+  font-family:var(--mono); font-size:11px; font-weight:700; letter-spacing:0.14em;
+  color:#fff; text-transform:uppercase;
+}
+.mdf-words::after{content:''; display:block; width:26px; height:2px; background:rgba(255,255,255,0.5); margin-top:2px;}
+
 @media(min-width:901px){
   .mobile-drawer, .mobile-drawer-backdrop{display:none !important;}
+}
+@media(max-width:340px){
+  .mobile-drawer-tagline{font-size:25px;}
+  .mdn-item{font-size:15.5px; padding:10px;}
+  .mdn-icon{width:38px; height:38px;}
+  .mobile-drawer-footer{height:160px;}
+  .mdf-photo{width:58%;}
 }
 
 /* ---------- HERO ---------- */
@@ -1101,7 +1211,7 @@ footer{background:var(--rice-dim); color:var(--ink); padding:80px 0 30px;}
 .hex-face-info{
   position:absolute; left:18%; right:18%; top:25%; bottom:25%; z-index:1;
   display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
-  opacity:0; transform:translateY(10px); pointer-events:none;
+  opacity:0; transform:translateY(10px); pointer-events:none; color:#fff;
   transition:opacity .4s var(--ease), transform .4s var(--ease);
 }
 .hex-face-info h3{
@@ -1136,6 +1246,7 @@ footer{background:var(--rice-dim); color:var(--ink); padding:80px 0 30px;}
   .hex-face-info{
     position:static; flex:1; opacity:1 !important; transform:none !important; pointer-events:auto;
     display:flex; flex-direction:column; align-items:flex-start; text-align:left;
+    color:var(--ink); /* sits on the page background here, not the dark hex, so back to dark text */
   }
   .hex-face-info h3{font-size:15px;}
   .hex-face-info p{font-size:13px; opacity:0.75;}
