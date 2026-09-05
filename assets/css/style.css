@@ -904,6 +904,9 @@ h1.hero-title{
      this card, mobile only — desktop/tablet spacing is untouched */
   .final-cta{margin-top:24px;}
 }
+@media(min-width:1024px){
+  .final-cta{margin-top:24px;}
+}
 @media(max-width:480px){
   .final-cta{padding:76px 20px; border-radius:32px;}
 }
